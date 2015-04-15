@@ -1,0 +1,19 @@
+<apex:page controller="TBN_CaptureAnswerController">
+	<apex:form id="theForm">
+		<apex:dataTable columns="1" value="{!fieldList}" var="field"> 
+            <apex:column >
+                <apex:selectList value="{!field.fieldtype}" size="1"> 
+                    <apex:selectOptions value="{!field.datatypelist}" /> 
+                    <apex:actionSupport event="onchange" reRender="theForm"/> 
+                </apex:selectList> 
+                <apex:inputText value="{!field.textvalue}" rendered="{!field.istext}" />                                
+
+            <apex:inputTextarea value="{!field.textareavalue}" rendered="{!field.istextarea}" />                                
+
+            <apex:inputCheckbox value="{!field.checkvalue}" rendered="{!field.ischeck}" />                      
+            </apex:column> 
+        </apex:dataTable>
+        <br /> 
+        <apex:commandButton action="{!addrow}" value="Add Row"/>
+	</apex:form>
+</apex:page>
