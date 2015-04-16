@@ -1,5 +1,7 @@
 <apex:page controller="TBN_CaptureAnswerController">
-     <apex:form >
+     <apex:form id="frmId">
+         <apex:actionFunction name="insertAnswersRecords" action="{!insertAnswers}" rerender="bagablockBtn"/>
+     <apex:pageBlock >
          <div class="treeheader" style="height:0px;">&nbsp;</div>
 
 <ul id="tree">
@@ -7,23 +9,27 @@
         <li><strong><apex:outputtext style="color:blue;" escape="false" value="{!parent.gparent.Name}"/></strong>
              <ul>
                  <apex:repeat value="{!parent.parent}" var="child">
-                    <li><span class="formattextcon"><apex:outputtext style="color:red;" escape="false" value="{!child.Name}"/></span>
+                    <li><span class="formattextcon"><apex:outputtext style="color:red;" escape="false" value="{!child.Question__c}"/></span>
                         <ul>
                             
                                 <apex:outputPanel rendered="{!child.Answers__r.size <= 0}">
-                               <li> <span class="formattextcon"><apex:inputField rendered="{!child.Type__c == 'Textarea'}" style="color:green;" value="{!parent.objAns.Answer__c}" />
-                               
-                                                               <apex:selectList rendered="{!child.Type__c == 'Picklist'}" value="{!items}" size="1" style="color:green;" >
-                                                                 <apex:selectOptions value="{!parent.lstSelOptions}"/>
+                               <li> <span class="formattextcon"><apex:inputField rendered="{!child.Type__c == 'Textarea'}" style="color:green;" value="{!parent.mapAnswers[child.id].Answer__c}" />
+
+                                                               <apex:selectList rendered="{!child.Type__c == 'Picklist'}" value="{!parent.mapOptions[child.id]}" size="1" style="color:green;" >
+                                                                 <apex:selectOptions value="{!parent.mapSelectOptions[child.id]}"/>
                                                                  </apex:selectList>
-                                                            <!--   <apex:inputField rendered="{!child.Type__c == 'Picklist'}" style="color:green;" value="{!parent.lstSelOptions }" /> -->
+                                                            
                             </span> 
                                     </li>
                                 </apex:outputPanel>
                     
                              <apex:outputPanel rendered="{!child.Answers__r.size > 0}">                         
                             <apex:repeat value="{!child.Answers__r}" var="gchildren">
-                               <li> <span class="formattextcon"><apex:outputField rendered="{!child.Type__c == 'Textarea'}" style="color:green;" value="{!gchildren.Answer__c}" />
+                               <li> <span class="formattextcon">
+                               <apex:inputField rendered="{!child.Type__c == 'Textarea'}" style="color:green;" value="{!gchildren.Answer__c}" />
+                               <apex:selectList rendered="{!child.Type__c == 'Picklist'}" value="{!parent.mapOptions[child.id]}" size="1" style="color:green;" >
+                                                                 <apex:selectOptions value="{!parent.mapSelectOptions[child.id]}"/>
+                                                                 </apex:selectList>
                                                               </span> </li>
                             </apex:repeat>
                              </apex:outputPanel>
@@ -34,5 +40,13 @@
         </li>
     </apex:repeat>
 </ul>
+<apex:pageBlockButtons id="bagablockBtn">
+<apex:commandButton value="Save" action="{!saveAllAnswers}"/>
+</apex:pageBlockButtons>
+</apex:pageBlock>
+<script>
+    window.onload = function(){
+    insertAnswersRecords();}
+</script>
      </apex:form>
 </apex:page>
