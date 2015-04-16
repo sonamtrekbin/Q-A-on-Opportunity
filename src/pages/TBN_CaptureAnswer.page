@@ -7,12 +7,26 @@
         <li><strong><apex:outputtext style="color:blue;" escape="false" value="{!parent.gparent.Name}"/></strong>
              <ul>
                  <apex:repeat value="{!parent.parent}" var="child">
-                    <li><span class="formattextcon"><apex:outputtext style="color:green;" escape="false" value="{!child.Name}"/></span>
+                    <li><span class="formattextcon"><apex:outputtext style="color:red;" escape="false" value="{!child.Name}"/></span>
                         <ul>
+                            
+                                <apex:outputPanel rendered="{!child.Answers__r.size <= 0}">
+                               <li> <span class="formattextcon"><apex:inputField rendered="{!child.Type__c == 'Textarea'}" style="color:green;" value="{!parent.objAns.Answer__c}" />
+                               
+                                                               <apex:selectList rendered="{!child.Type__c == 'Picklist'}" value="{!items}" size="1" style="color:green;" >
+                                                                 <apex:selectOptions value="{!parent.lstSelOptions}"/>
+                                                                 </apex:selectList>
+                                                            <!--   <apex:inputField rendered="{!child.Type__c == 'Picklist'}" style="color:green;" value="{!parent.lstSelOptions }" /> -->
+                            </span> 
+                                    </li>
+                                </apex:outputPanel>
+                    
+                             <apex:outputPanel rendered="{!child.Answers__r.size > 0}">                         
                             <apex:repeat value="{!child.Answers__r}" var="gchildren">
-                               <li> <span class="formattextcon">alert('fsdfsdf') <apex:inputField rendered="{!child.Type__c == 'Textarea'}" style="color:red;" value="{!child.Type__c}" />
-                                                               <apex:inputField rendered="{!child.Type__c == 'Picklist'}" style="color:red;" value="{!child.Values__c}" /> </span> </li>
+                               <li> <span class="formattextcon"><apex:outputField rendered="{!child.Type__c == 'Textarea'}" style="color:green;" value="{!gchildren.Answer__c}" />
+                                                              </span> </li>
                             </apex:repeat>
+                             </apex:outputPanel>
                         </ul>       
                     </li>
                  </apex:repeat>  
