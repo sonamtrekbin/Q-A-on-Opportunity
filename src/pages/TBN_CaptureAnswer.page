@@ -1,52 +1,50 @@
 <apex:page controller="TBN_CaptureAnswerController">
-     <apex:form id="frmId">
-         <apex:actionFunction name="insertAnswersRecords" action="{!insertAnswers}" rerender="bagablockBtn"/>
-     <apex:pageBlock >
-         <div class="treeheader" style="height:0px;">&nbsp;</div>
-
-<ul id="tree">
-    <apex:repeat value="{!mainnodes}" var="parent">
-        <li><strong><apex:outputtext style="color:blue;" escape="false" value="{!parent.gparent.Name}"/></strong>
-             <ul>
-                 <apex:repeat value="{!parent.parent}" var="child">
-                    <li><span class="formattextcon"><apex:outputtext style="color:red;" escape="false" value="{!child.Question__c}"/></span>
-                        <ul>
-                            
-                                <apex:outputPanel rendered="{!child.Answers__r.size <= 0}">
-                               <li> <span class="formattextcon"><apex:inputField rendered="{!child.Type__c == 'Textarea'}" style="color:green;" value="{!parent.mapAnswers[child.id].Answer__c}" />
-
-                                                               <apex:selectList rendered="{!child.Type__c == 'Picklist'}" value="{!parent.mapOptions[child.id]}" size="1" style="color:green;" >
-                                                                 <apex:selectOptions value="{!parent.mapSelectOptions[child.id]}"/>
-                                                                 </apex:selectList>
-                                                            
-                            </span> 
-                                    </li>
-                                </apex:outputPanel>
+    <apex:form id="frmId">
+         <apex:actionFunction name="insertAnswersRecords" action="{!insertAnswers}" rerender="frmId"/>
+        
+         <apex:pageBlock id="pageblock">
+         <apex:messages id="message"/>
+            <apex:repeat value="{!ProductandQuestions}" var="pq">
+                <apex:pageblock >
+                    <strong><apex:outputtext style="color:blue;" escape="false" value="{!pq.objProduct.Name}"/></strong>
+                    <br/><br/>
                     
-                             <apex:outputPanel rendered="{!child.Answers__r.size > 0}">                         
-                            <apex:repeat value="{!child.Answers__r}" var="gchildren">
-                               <li> <span class="formattextcon">
-                               <apex:inputField rendered="{!child.Type__c == 'Textarea'}" style="color:green;" value="{!gchildren.Answer__c}" />
-                               <apex:selectList rendered="{!child.Type__c == 'Picklist'}" value="{!parent.mapOptions[child.id]}" size="1" style="color:green;" >
-                                                                 <apex:selectOptions value="{!parent.mapSelectOptions[child.id]}"/>
-                                                                 </apex:selectList>
-                                                              </span> </li>
-                            </apex:repeat>
-                             </apex:outputPanel>
-                        </ul>       
-                    </li>
-                 </apex:repeat>  
-             </ul>  
-        </li>
-    </apex:repeat>
-</ul>
-<apex:pageBlockButtons id="bagablockBtn">
-<apex:commandButton value="Save" action="{!saveAllAnswers}"/>
-</apex:pageBlockButtons>
-</apex:pageBlock>
-<script>
-    window.onload = function(){
-    insertAnswersRecords();}
-</script>
-     </apex:form>
+                    <apex:repeat value="{!pq.lstQuestion}" var="que">
+                        <span class="formattextcon"><apex:outputtext style="color:red;" escape="false" value="{!que.Question__c}"/></span>
+                        <apex:outputPanel rendered="{!que.Answers__r.size <= 0}">
+                            <span class="formattextcon">
+                                <apex:inputField rendered="{!que.Type__c == 'Textarea'}" style="color:green;" value="{!pq.mapAnswers[que.id].Answer__c}" />
+                                <apex:selectList rendered="{!que.Type__c == 'Picklist'}" value="{!pq.mapOptions[que.id]}" size="1" style="color:green;" >
+                                    <apex:selectOptions value="{!pq.mapSelectOptions[que.id]}"/>
+                                </apex:selectList>
+                            </span> 
+                        </apex:outputPanel> 
+                        
+                        <apex:outputPanel rendered="{!que.Answers__r.size > 0}">                         
+                            <apex:repeat value="{!que.Answers__r}" var="ans">
+                                <span class="formattextcon">
+                                    <apex:inputField rendered="{!que.Type__c == 'Textarea'}" style="color:green;" value="{!ans.Answer__c}" />
+                                    <apex:selectList rendered="{!que.Type__c == 'Picklist'}" value="{!pq.mapOptions[que.id]}" size="1" style="color:green;" >
+                                        <apex:selectOptions value="{!pq.mapSelectOptions[que.id]}"/>
+                                    </apex:selectList>  
+                                </span> 
+                            </apex:repeat> 
+                        </apex:outputPanel>
+                        <br/><br/>
+                    </apex:repeat> 
+                    
+                </apex:pageblock>   
+            </apex:repeat>
+            <apex:pageBlockButtons id="pageblockBtn" location="bottom">
+                <apex:commandButton value="Save" action="{!saveAllAnswers}" rerender="pageblock"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        
+        <script>
+            window.onload = function()
+            {
+                insertAnswersRecords();
+            }
+        </script>
+    </apex:form>
 </apex:page>
